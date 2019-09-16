@@ -1,14 +1,29 @@
-var shareImageButton = document.querySelector('#share-image-button');
-var createPostArea = document.querySelector('#create-post');
-var closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
+let shareImageButton = document.querySelector('#share-image-button');
+let createPostArea = document.querySelector('#create-post');
+let closeCreatePostModalButton = document.querySelector('#close-create-post-modal-btn');
 
-function openCreatePostModal() {
+const openCreatePostModal = () => {
   createPostArea.style.display = 'block';
-}
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
 
-function closeCreatePostModal() {
+    deferredPrompt.userChoice.then(choiceResult => {
+      console.log(choiceResult.outcome);
+
+      if (choiceResult.outcome === 'dismissed') {
+        console.log('User cancelled installation');
+      } else {
+        console.log('User added to home screen');
+      }
+    });
+
+    deferredPrompt = null;
+  }
+};
+
+const closeCreatePostModal = () => {
   createPostArea.style.display = 'none';
-}
+};
 
 shareImageButton.addEventListener('click', openCreatePostModal);
 
