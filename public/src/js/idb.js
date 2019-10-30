@@ -44,7 +44,7 @@
         },
         set: function(val) {
           this[targetProp][prop] = val;
-        },
+        }
       });
     });
   }
@@ -80,26 +80,42 @@
     this._index = index;
   }
 
-  proxyProperties(Index, '_index', ['name', 'keyPath', 'multiEntry', 'unique']);
+  proxyProperties(Index, '_index', [
+    'name',
+    'keyPath',
+    'multiEntry',
+    'unique'
+  ]);
 
   proxyRequestMethods(Index, '_index', IDBIndex, [
     'get',
     'getKey',
     'getAll',
     'getAllKeys',
-    'count',
+    'count'
   ]);
 
-  proxyCursorRequestMethods(Index, '_index', IDBIndex, ['openCursor', 'openKeyCursor']);
+  proxyCursorRequestMethods(Index, '_index', IDBIndex, [
+    'openCursor',
+    'openKeyCursor'
+  ]);
 
   function Cursor(cursor, request) {
     this._cursor = cursor;
     this._request = request;
   }
 
-  proxyProperties(Cursor, '_cursor', ['direction', 'key', 'primaryKey', 'value']);
+  proxyProperties(Cursor, '_cursor', [
+    'direction',
+    'key',
+    'primaryKey',
+    'value'
+  ]);
 
-  proxyRequestMethods(Cursor, '_cursor', IDBCursor, ['update', 'delete']);
+  proxyRequestMethods(Cursor, '_cursor', IDBCursor, [
+    'update',
+    'delete'
+  ]);
 
   // proxy 'next' methods
   ['advance', 'continue', 'continuePrimaryKey'].forEach(function(methodName) {
@@ -129,7 +145,12 @@
     return new Index(this._store.index.apply(this._store, arguments));
   };
 
-  proxyProperties(ObjectStore, '_store', ['name', 'keyPath', 'indexNames', 'autoIncrement']);
+  proxyProperties(ObjectStore, '_store', [
+    'name',
+    'keyPath',
+    'indexNames',
+    'autoIncrement'
+  ]);
 
   proxyRequestMethods(ObjectStore, '_store', IDBObjectStore, [
     'put',
@@ -140,12 +161,17 @@
     'getAll',
     'getKey',
     'getAllKeys',
-    'count',
+    'count'
   ]);
 
-  proxyCursorRequestMethods(ObjectStore, '_store', IDBObjectStore, ['openCursor', 'openKeyCursor']);
+  proxyCursorRequestMethods(ObjectStore, '_store', IDBObjectStore, [
+    'openCursor',
+    'openKeyCursor'
+  ]);
 
-  proxyMethods(ObjectStore, '_store', IDBObjectStore, ['deleteIndex']);
+  proxyMethods(ObjectStore, '_store', IDBObjectStore, [
+    'deleteIndex'
+  ]);
 
   function Transaction(idbTransaction) {
     this._tx = idbTransaction;
@@ -166,9 +192,14 @@
     return new ObjectStore(this._tx.objectStore.apply(this._tx, arguments));
   };
 
-  proxyProperties(Transaction, '_tx', ['objectStoreNames', 'mode']);
+  proxyProperties(Transaction, '_tx', [
+    'objectStoreNames',
+    'mode'
+  ]);
 
-  proxyMethods(Transaction, '_tx', IDBTransaction, ['abort']);
+  proxyMethods(Transaction, '_tx', IDBTransaction, [
+    'abort'
+  ]);
 
   function UpgradeDB(db, oldVersion, transaction) {
     this._db = db;
@@ -180,9 +211,16 @@
     return new ObjectStore(this._db.createObjectStore.apply(this._db, arguments));
   };
 
-  proxyProperties(UpgradeDB, '_db', ['name', 'version', 'objectStoreNames']);
+  proxyProperties(UpgradeDB, '_db', [
+    'name',
+    'version',
+    'objectStoreNames'
+  ]);
 
-  proxyMethods(UpgradeDB, '_db', IDBDatabase, ['deleteObjectStore', 'close']);
+  proxyMethods(UpgradeDB, '_db', IDBDatabase, [
+    'deleteObjectStore',
+    'close'
+  ]);
 
   function DB(db) {
     this._db = db;
@@ -192,9 +230,15 @@
     return new Transaction(this._db.transaction.apply(this._db, arguments));
   };
 
-  proxyProperties(DB, '_db', ['name', 'version', 'objectStoreNames']);
+  proxyProperties(DB, '_db', [
+    'name',
+    'version',
+    'objectStoreNames'
+  ]);
 
-  proxyMethods(DB, '_db', IDBDatabase, ['close']);
+  proxyMethods(DB, '_db', IDBDatabase, [
+    'close'
+  ]);
 
   // Add cursor iterators
   // TODO: remove this once browsers do the right thing with promises
@@ -254,13 +298,14 @@
     },
     delete: function(name) {
       return promisifyRequestCall(indexedDB, 'deleteDatabase', [name]);
-    },
+    }
   };
 
   if (typeof module !== 'undefined') {
     module.exports = exp;
     module.exports.default = module.exports;
-  } else {
+  }
+  else {
     self.idb = exp;
   }
-})();
+}());

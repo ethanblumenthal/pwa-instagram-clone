@@ -9,7 +9,7 @@ var locationInput = document.querySelector('#location');
 function openCreatePostModal() {
   // createPostArea.style.display = 'block';
   // setTimeout(function() {
-  createPostArea.style.transform = 'translateY(0)';
+    createPostArea.style.transform = 'translateY(0)';
   // }, 1);
   if (deferredPrompt) {
     deferredPrompt.prompt();
@@ -50,15 +50,16 @@ closeCreatePostModalButton.addEventListener('click', closeCreatePostModal);
 function onSaveButtonClicked(event) {
   console.log('clicked');
   if ('caches' in window) {
-    caches.open('user-requested').then(function(cache) {
-      cache.add('https://httpbin.org/get');
-      cache.add('/src/images/sf-boat.jpg');
-    });
+    caches.open('user-requested')
+      .then(function(cache) {
+        cache.add('https://httpbin.org/get');
+        cache.add('/src/images/sf-boat.jpg');
+      });
   }
 }
 
 function clearCards() {
-  while (sharedMomentsArea.hasChildNodes()) {
+  while(sharedMomentsArea.hasChildNodes()) {
     sharedMomentsArea.removeChild(sharedMomentsArea.lastChild);
   }
 }
@@ -114,12 +115,13 @@ fetch(url)
   });
 
 if ('indexedDB' in window) {
-  readAllData('posts').then(function(data) {
-    if (!networkDataReceived) {
-      console.log('From cache', data);
-      updateUI(data);
-    }
-  });
+  readAllData('posts')
+    .then(function(data) {
+      if (!networkDataReceived) {
+        console.log('From cache', data);
+        updateUI(data);
+      }
+    });
 }
 
 function sendData() {
@@ -127,19 +129,19 @@ function sendData() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Accept': 'application/json'
     },
     body: JSON.stringify({
       id: new Date().toISOString(),
       title: titleInput.value,
       location: locationInput.value,
-      image:
-        'https://firebasestorage.googleapis.com/v0/b/pwagram-99adf.appspot.com/o/sf-boat.jpg?alt=media&token=19f4770c-fc8c-4882-92f1-62000ff06f16',
-    }),
-  }).then(function(res) {
-    console.log('Sent data', res);
-    updateUI();
-  });
+      image: 'https://firebasestorage.googleapis.com/v0/b/pwagram-99adf.appspot.com/o/sf-boat.jpg?alt=media&token=19f4770c-fc8c-4882-92f1-62000ff06f16'
+    })
+  })
+    .then(function(res) {
+      console.log('Sent data', res);
+      updateUI();
+    })
 }
 
 form.addEventListener('submit', function(event) {
@@ -153,25 +155,26 @@ form.addEventListener('submit', function(event) {
   closeCreatePostModal();
 
   if ('serviceWorker' in navigator && 'SyncManager' in window) {
-    navigator.serviceWorker.ready.then(function(sw) {
-      var post = {
-        id: new Date().toISOString(),
-        title: titleInput.value,
-        location: locationInput.value,
-      };
-      writeData('sync-posts', post)
-        .then(function() {
-          return sw.sync.register('sync-new-posts');
-        })
-        .then(function() {
-          var snackbarContainer = document.querySelector('#confirmation-toast');
-          var data = { message: 'Your Post was saved for syncing!' };
-          snackbarContainer.MaterialSnackbar.showSnackbar(data);
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
-    });
+    navigator.serviceWorker.ready
+      .then(function(sw) {
+        var post = {
+          id: new Date().toISOString(),
+          title: titleInput.value,
+          location: locationInput.value
+        };
+        writeData('sync-posts', post)
+          .then(function() {
+            return sw.sync.register('sync-new-posts');
+          })
+          .then(function() {
+            var snackbarContainer = document.querySelector('#confirmation-toast');
+            var data = {message: 'Your Post was saved for syncing!'};
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          })
+          .catch(function(err) {
+            console.log(err);
+          });
+      });
   } else {
     sendData();
   }
